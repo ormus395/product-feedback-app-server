@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './product.entity';
@@ -57,5 +61,25 @@ export class ProductsService {
       .where({ title: title })
       .leftJoinAndSelect('product.user', 'user')
       .getMany();
+  }
+
+  // updates for products
+  // change product title
+  async updateProductTitle(title: string, productId: number, user: User) {
+    // find the product by id
+    const productToUpdate = await this.repo
+      .createQueryBuilder('product')
+      .select('product')
+      .where('product.id = :id', { id: productId })
+      .leftJoinAndSelect('product.user', 'user')
+      .getOne();
+
+    if (productToUpdate.user.id !== user.id) {
+      throw new UnauthorizedException('This is not your product to update');
+    }
+
+    productToUpdate.title = title;
+
+    return this.repo.save(productToUpdate);
   }
 }

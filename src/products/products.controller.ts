@@ -10,6 +10,7 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
@@ -27,6 +28,16 @@ export class ProductsController {
   createProduct(@Request() req, @Body() body: CreateProductDto) {
     console.log(req);
     return this.productsService.create(body, req.user);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Patch(':id')
+  async updateProductTitle(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body,
+    @Request() req,
+  ) {
+    return this.productsService.updateProductTitle(body.title, id, req.user);
   }
 
   @Get('/:id')
