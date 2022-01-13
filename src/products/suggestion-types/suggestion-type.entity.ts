@@ -16,9 +16,13 @@ export class SuggestionType {
   @Column()
   title: string;
 
-  @ManyToOne(() => Product, (product) => product.suggestionTypes)
+  @ManyToOne(() => Product, (product) => product.suggestionTypes, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 
-  @OneToMany(() => Suggestion, (suggestion) => suggestion.suggestionType)
+  @OneToMany(() => Suggestion, (suggestion) => suggestion.suggestionType, {
+    onDelete: 'CASCADE',
+  })
   suggestions: Suggestion[];
 }

@@ -11,6 +11,7 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
@@ -38,6 +39,12 @@ export class ProductsController {
     @Request() req,
   ) {
     return this.productsService.updateProductTitle(body.title, id, req.user);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete(':id')
+  async deleteProduct(@Param('id', ParseIntPipe) id: number, @Request() req) {
+    return this.productsService.deleteProduct(id, req.user);
   }
 
   @Get('/:id')

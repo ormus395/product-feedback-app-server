@@ -17,12 +17,16 @@ export class Product {
   @Column()
   title: string;
 
-  @ManyToOne(() => User, (user) => user.products)
+  @ManyToOne(() => User, (user) => user.products, { onDelete: 'CASCADE' })
   user: User;
 
-  @OneToMany(() => SuggestionType, (suggestionType) => suggestionType.product)
+  @OneToMany(() => SuggestionType, (suggestionType) => suggestionType.product, {
+    onDelete: 'CASCADE',
+  })
   suggestionTypes: SuggestionType[];
 
-  @OneToMany(() => Suggestion, (suggestion) => suggestion.product)
+  @OneToMany(() => Suggestion, (suggestion) => suggestion.product, {
+    onDelete: 'CASCADE',
+  })
   suggestions: Suggestion[];
 }

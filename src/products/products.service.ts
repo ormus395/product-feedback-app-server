@@ -82,4 +82,32 @@ export class ProductsService {
 
     return this.repo.save(productToUpdate);
   }
+
+  async deleteProduct(productId: number, user: User) {
+    const productToDelete = await this.repo
+      .createQueryBuilder('product')
+      .select('product')
+      .where('product.id = :id', { id: productId })
+      .leftJoinAndSelect('product.user', 'user')
+      .getOne();
+
+    if (productToDelete) {
+      if (productToDelete.user.id !== user.id) {
+        throw new UnauthorizedException('This is not your product to delete');
+      } else {
+        // need to delete all of the suggestion types related to this
+        const deleteResult = await this.repo
+          .findOne(productId)
+          .then((p) => this.repo.delete({ id: productId }));
+
+        if (deleteResult.affected > 0) {
+          return true;
+        }
+      }
+    } else {
+      throw new NotFoundException('A product with that id was not found');
+    }
+
+    return false;
+  }
 }

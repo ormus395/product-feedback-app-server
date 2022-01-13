@@ -36,13 +36,15 @@ export class User {
   @Column()
   password: string;
 
-  @OneToMany(() => Product, (product) => product.user)
+  @OneToMany(() => Product, (product) => product.user, { onDelete: 'CASCADE' })
   products: Product[];
 
-  @OneToMany(() => Suggestion, (suggestion) => suggestion.user)
+  @OneToMany(() => Suggestion, (suggestion) => suggestion.user, {
+    onDelete: 'CASCADE',
+  })
   suggestions: Suggestion[];
 
-  @OneToMany(() => Comment, (comment) => comment.user)
+  @OneToMany(() => Comment, (comment) => comment.user, { onDelete: 'CASCADE' })
   comments: Comment[];
 
   @AfterInsert()
