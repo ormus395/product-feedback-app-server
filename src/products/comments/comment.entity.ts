@@ -19,9 +19,11 @@ export class Comment {
   @Column()
   body: string;
 
-  @ManyToOne(() => User, (user) => user.comments)
+  @ManyToOne(() => User, (user) => user.comments, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToOne(() => Suggestion, (suggestion) => suggestion.comments)
+  @ManyToOne(() => Suggestion, (suggestion) => suggestion.comments, {
+    onDelete: 'CASCADE',
+  })
   suggestion: Suggestion;
 }

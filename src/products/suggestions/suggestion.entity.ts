@@ -26,18 +26,23 @@ export class Suggestion {
   })
   votes: number;
 
-  @ManyToOne(() => Product, (product) => product.suggestions)
+  @ManyToOne(() => Product, (product) => product.suggestions, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 
   @ManyToOne(
     () => SuggestionType,
     (suggestionType) => suggestionType.suggestions,
+    { onDelete: 'CASCADE' },
   )
   suggestionType: SuggestionType;
 
-  @ManyToOne(() => User, (user) => user.suggestions)
+  @ManyToOne(() => User, (user) => user.suggestions, { onDelete: 'CASCADE' })
   user: User;
 
-  @OneToMany(() => Comment, (comment) => comment.suggestion)
+  @OneToMany(() => Comment, (comment) => comment.suggestion, {
+    onDelete: 'CASCADE',
+  })
   comments: Comment[];
 }

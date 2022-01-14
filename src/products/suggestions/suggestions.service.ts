@@ -28,4 +28,29 @@ export class SuggestionsService {
 
     return this.repo.save(suggestion);
   }
+
+  async findAll(productId: number) {
+    return await this.repo
+      .createQueryBuilder('suggestion')
+      .select('suggestion')
+      .where('suggestion.productId = :id', { id: productId })
+      .leftJoinAndSelect('suggestion.user', 'user')
+      .leftJoinAndSelect('suggestion.product', 'product')
+      .leftJoinAndSelect('suggestion.suggestionType', 'suggestionType')
+      .getMany();
+  }
+
+  async findAllById(productId: number, suggestionTypeId: number) {
+    return await this.repo
+      .createQueryBuilder('suggestion')
+      .select('suggestion')
+      .where('suggestion.productId = :productId', { productId })
+      .andWhere('suggestion.suggestionTypeId = :suggestionTypeId', {
+        suggestionTypeId,
+      })
+      .leftJoinAndSelect('suggestion.user', 'user')
+      .leftJoinAndSelect('suggestion.product', 'product')
+      .leftJoinAndSelect('suggestion.suggestionType', 'suggestionType')
+      .getOne();
+  }
 }

@@ -7,8 +7,11 @@ import {
   UseInterceptors,
   Param,
   ParseIntPipe,
+  Query,
+  Get,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { get } from 'http';
 import { SerializeInterceptor } from '../../interceptors/serialize.interceptor';
 import { CreateSuggestionDto } from './dto/create-suggestion.dto';
 import { SuggestionDto } from './dto/suggestion.dto';
@@ -26,5 +29,17 @@ export class SuggestionsController {
     @Body() body: CreateSuggestionDto,
   ) {
     return this.suggestionsService.create(body, req.user);
+  }
+
+  // get suggestion by suggestion type on a product
+  @Get()
+  getAllBySuggestionType(
+    @Param('productId', ParseIntPipe) productId: number,
+    @Query('suggestionType') suggestionType,
+  ) {
+    if (suggestionType === 'all') {
+      return this.suggestionsService.findAll(productId);
+    }
+    return this.suggestionsService.findAllById(productId, suggestionType);
   }
 }
