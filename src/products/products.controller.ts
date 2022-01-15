@@ -24,6 +24,29 @@ import { ProductsService } from './products.service';
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
+  @Get('/all')
+  async getAllProducts() {
+    return this.productsService.findAll();
+  }
+
+  @Get('/:id')
+  async getProductById(@Param('id', ParseIntPipe) id: number) {
+    const product = await this.productsService.findById(id);
+    return product;
+  }
+
+  @Get()
+  async findProductsByTitle(@Query('title') title: string, @Query('userId') userId: number) {
+    const products = await this.productsService.findProductByTitle(title);
+    console.log(products);
+    if (products.length < 1) {
+      throw new NotFoundException(
+        'There doesnt seem to be products with that title.',
+      );
+    }
+    return products;
+  }
+
   @UseGuards(AuthGuard('jwt'))
   @Post()
   createProduct(@Request() req, @Body() body: CreateProductDto) {
@@ -45,23 +68,5 @@ export class ProductsController {
   @Delete(':id')
   async deleteProduct(@Param('id', ParseIntPipe) id: number, @Request() req) {
     return this.productsService.deleteProduct(id, req.user);
-  }
-
-  @Get('/:id')
-  async getProductById(@Param('id', ParseIntPipe) id: number) {
-    const product = await this.productsService.findById(id);
-    return product;
-  }
-
-  @Get()
-  async findProductsByTitle(@Query('title') title: string) {
-    const products = await this.productsService.findProductByTitle(title);
-    console.log(products);
-    if (products.length < 1) {
-      throw new NotFoundException(
-        'There doesnt seem to be products with that title.',
-      );
-    }
-    return products;
   }
 }

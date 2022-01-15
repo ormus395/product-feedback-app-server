@@ -63,6 +63,13 @@ export class ProductsService {
       .getMany();
   }
 
+  async findProductByUser(userId) {
+    return this.repo.createQueryBuilder('product')
+      .select('product')
+      .where('product.userId = :userId', {userId})
+      .getMany()
+  }
+
   // updates for products
   // change product title
   async updateProductTitle(title: string, productId: number, user: User) {

@@ -1,0 +1,8 @@
+### list all products
+GET http://localhost:3000/products/all
+
+### list all products for logged in user,,,, dashboard?
+
+### list all products for a specific user
+GET http://localhost:3000/products?userId=2
+### create a post
