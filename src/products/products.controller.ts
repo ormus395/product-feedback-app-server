@@ -36,8 +36,21 @@ export class ProductsController {
   }
 
   @Get()
-  async findProductsByTitle(@Query('title') title: string, @Query('userId') userId: number) {
-    const products = await this.productsService.findProductByTitle(title);
+  async findProductsByTitle(
+    @Query('title') title: string,
+    @Query('userId') userId: number,
+  ) {
+    console.log(title);
+    console.log(userId);
+    let products;
+    if (title && userId) {
+      return 'this would return a product specific to title and userId';
+    } else if (title) {
+      products = await this.productsService.findProductByTitle(title);
+    } else if (userId) {
+      products = await this.productsService.findProductsByUserId(userId);
+    }
+
     console.log(products);
     if (products.length < 1) {
       throw new NotFoundException(

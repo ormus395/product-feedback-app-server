@@ -9,9 +9,9 @@ import {
   ParseIntPipe,
   Query,
   Get,
+  Patch,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { get } from 'http';
 import { SerializeInterceptor } from '../../interceptors/serialize.interceptor';
 import { CreateSuggestionDto } from './dto/create-suggestion.dto';
 import { SuggestionDto } from './dto/suggestion.dto';
@@ -42,4 +42,10 @@ export class SuggestionsController {
     }
     return this.suggestionsService.findAllById(productId, suggestionType);
   }
+
+  // update suggestion
+  // should just sent suggestion id via json
+  @UseGuards(AuthGuard('jwt'))
+  @Patch()
+  updateSuggestion() {}
 }

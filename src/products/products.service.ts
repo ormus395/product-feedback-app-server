@@ -52,7 +52,7 @@ export class ProductsService {
 
   // returns all of the products
   async findAll() {
-    return this.repo.find();
+    return this.repo.find({ relations: ['user'] });
   }
 
   async findProductByTitle(title: string) {
@@ -63,11 +63,13 @@ export class ProductsService {
       .getMany();
   }
 
-  async findProductByUser(userId) {
-    return this.repo.createQueryBuilder('product')
+  async findProductsByUserId(userId) {
+    return this.repo
+      .createQueryBuilder('product')
       .select('product')
-      .where('product.userId = :userId', {userId})
-      .getMany()
+      .where('product.userId = :userId', { userId })
+      .leftJoinAndSelect('product.user', 'user')
+      .getMany();
   }
 
   // updates for products
