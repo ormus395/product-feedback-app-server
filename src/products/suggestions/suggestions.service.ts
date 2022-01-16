@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../product.entity';
 import { User } from '../../users/user.entity';
 import { Suggestion } from './suggestion.entity';
 import { CreateSuggestionDto } from './dto/create-suggestion.dto';
+import { UpdateSuggestionDto } from './dto/update-suggestion.dto';
 import { SuggestionType } from '../suggestion-types/suggestion-type.entity';
 
 @Injectable()
@@ -52,5 +53,23 @@ export class SuggestionsService {
       .leftJoinAndSelect('suggestion.product', 'product')
       .leftJoinAndSelect('suggestion.suggestionType', 'suggestionType')
       .getOne();
+  }
+
+  // update the suggestions title or body
+  async updateSuggestion(
+    updateSuggstionDto: Partial<UpdateSuggestionDto>,
+    suggestionId: number,
+    user: User,
+  ) {
+    // find suggestion by id
+    const suggestionToUpdate = await this.repo.findOne(suggestionId);
+
+    if (!suggestionToUpdate) {
+      throw new NotFoundException('A Suggestion with that ID does not exist');
+    }
+
+    Object.assign(suggestionToUpdate, updateSuggstionDto);
+
+    return this.repo.save(suggestionToUpdate);
   }
 }

@@ -8,21 +8,7 @@ import { SuggestionsModule } from './suggestions/suggestions.module';
 import { SuggestionType } from './suggestion-types/suggestion-type.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Product, SuggestionType]),
-    RouterModule.register([
-      {
-        path: 'products',
-        module: ProductsModule,
-        children: [
-          {
-            path: ':productId',
-            module: SuggestionsModule,
-          },
-        ],
-      },
-    ]),
-  ],
+  imports: [TypeOrmModule.forFeature([Product, SuggestionType])],
   providers: [ProductsService],
   controllers: [ProductsController],
 })

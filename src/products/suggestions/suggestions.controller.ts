@@ -15,14 +15,14 @@ import { AuthGuard } from '@nestjs/passport';
 import { SerializeInterceptor } from '../../interceptors/serialize.interceptor';
 import { CreateSuggestionDto } from './dto/create-suggestion.dto';
 import { SuggestionDto } from './dto/suggestion.dto';
+import { UpdateSuggestionDto } from './dto/update-suggestion.dto';
 import { SuggestionsService } from './suggestions.service';
 
-@UseInterceptors(new SerializeInterceptor(SuggestionDto))
-@Controller('suggestions')
+@Controller()
 export class SuggestionsController {
   constructor(private suggestionsService: SuggestionsService) {}
   @UseGuards(AuthGuard('jwt'))
-  @Post()
+  @Post('suggestions')
   createSuggestion(
     @Param('productId', ParseIntPipe) productId: number,
     @Request() req,
@@ -32,7 +32,8 @@ export class SuggestionsController {
   }
 
   // get suggestion by suggestion type on a product
-  @Get()
+  @UseInterceptors(new SerializeInterceptor(SuggestionDto))
+  @Get('products/:productId/suggestions')
   getAllBySuggestionType(
     @Param('productId', ParseIntPipe) productId: number,
     @Query('suggestionType') suggestionType,
@@ -46,6 +47,16 @@ export class SuggestionsController {
   // update suggestion
   // should just sent suggestion id via json
   @UseGuards(AuthGuard('jwt'))
-  @Patch()
-  updateSuggestion() {}
+  @Patch('suggestion/:suggestionId')
+  updateSuggestion(
+    @Param('suggestionId', ParseIntPipe) suggestionId: number,
+    @Body() body: UpdateSuggestionDto,
+    @Request() req: any,
+  ) {
+    return this.suggestionsService.updateSuggestion(
+      body,
+      suggestionId,
+      req.user,
+    );
+  }
 }
