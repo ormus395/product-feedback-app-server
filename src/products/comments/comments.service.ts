@@ -34,4 +34,13 @@ export class CommentsService {
 
     return this.repo.save(comment);
   }
+
+  async getCommentsBySuggestion(suggestionId: number) {
+    return await this.repo
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.user', 'user')
+      .leftJoinAndSelect('comment.suggestion', 'suggestion')
+      .where('comment.suggestionId = :suggestionId', { suggestionId })
+      .getMany();
+  }
 }
