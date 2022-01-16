@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../product.entity';
@@ -62,14 +66,35 @@ export class SuggestionsService {
     user: User,
   ) {
     // find suggestion by id
-    const suggestionToUpdate = await this.repo.findOne(suggestionId);
+    const suggestionToUpdate = await this.repo.findOne(suggestionId, {
+      relations: ['user'],
+    });
 
     if (!suggestionToUpdate) {
       throw new NotFoundException('A Suggestion with that ID does not exist');
     }
 
+    if (suggestionToUpdate.user.id !== user.id) {
+      throw new UnauthorizedException('This is not your suggestion to update');
+    }
+
     Object.assign(suggestionToUpdate, updateSuggstionDto);
 
     return this.repo.save(suggestionToUpdate);
+  }
+
+  async deleteSuggestion(suggestionId: number, user: User) {
+    const deleteResults = await this.repo
+      .createQueryBuilder()
+      .delete()
+      .where('id = :suggestionId', { suggestionId })
+      .andWhere('suggestion.userId = :userId', { userId: user.id })
+      .execute();
+
+    if (deleteResults.affected > 0) {
+      return true;
+    }
+
+    return false;
   }
 }

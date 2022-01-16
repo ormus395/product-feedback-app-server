@@ -10,6 +10,7 @@ import {
   Query,
   Get,
   Patch,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { SerializeInterceptor } from '../../interceptors/serialize.interceptor';
@@ -47,7 +48,7 @@ export class SuggestionsController {
   // update suggestion
   // should just sent suggestion id via json
   @UseGuards(AuthGuard('jwt'))
-  @Patch('suggestion/:suggestionId')
+  @Patch('suggestions/:suggestionId')
   updateSuggestion(
     @Param('suggestionId', ParseIntPipe) suggestionId: number,
     @Body() body: UpdateSuggestionDto,
@@ -58,5 +59,15 @@ export class SuggestionsController {
       suggestionId,
       req.user,
     );
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Delete('suggestions/:suggestionId')
+  deleteSuggestion(
+    @Param('suggestionId', ParseIntPipe) suggestionId: number,
+    @Request() req: any,
+  ) {
+    // this needs to be changed for better expereince
+    return this.suggestionsService.deleteSuggestion(suggestionId, req.user);
   }
 }
