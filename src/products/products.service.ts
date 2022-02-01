@@ -47,6 +47,7 @@ export class ProductsService {
       .createQueryBuilder('product')
       .where({ id })
       .leftJoinAndSelect('product.user', 'user')
+      .leftJoinAndSelect('product.suggestionTypes', 'suggestionTypes')
       .getOne();
   }
 

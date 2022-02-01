@@ -20,7 +20,7 @@ import { ProductDto } from './dto/product.dto';
 import { ProductsService } from './products.service';
 
 @UseInterceptors(new SerializeInterceptor(ProductDto))
-@Controller()
+@Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
@@ -32,6 +32,7 @@ export class ProductsController {
   @Get('/:id')
   async getProductById(@Param('id', ParseIntPipe) id: number) {
     const product = await this.productsService.findById(id);
+    console.log(product);
     return product;
   }
 
