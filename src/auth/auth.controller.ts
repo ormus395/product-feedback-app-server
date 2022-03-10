@@ -8,12 +8,16 @@ import {
   Get,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 
 // @UseInterceptors(new SerializeInterceptor(UserDto))
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private userService: UsersService,
+  ) {}
 
   @UseGuards(AuthGuard('local'))
   @Post('/login')
@@ -25,5 +29,11 @@ export class AuthController {
   @Get('/protected')
   getProtected() {
     return 'This route is protected';
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/profile')
+  async getProfile(@Request() req) {
+    return this.userService.findOne(req.user.id);
   }
 }
