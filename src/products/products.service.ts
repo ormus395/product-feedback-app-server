@@ -26,9 +26,10 @@ export class ProductsService {
 
     const savedRepo = await this.repo.save(product);
 
+    console.log('Server PRoduct service', body.suggestionTypes);
     for (let type of body.suggestionTypes) {
       const newSuggestionType: SuggestionType = this.suggestionTypeRepo.create({
-        title: type,
+        title: type['title'],
       });
 
       try {

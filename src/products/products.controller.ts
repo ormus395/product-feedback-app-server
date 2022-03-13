@@ -59,7 +59,6 @@ export class ProductsController {
   @UseGuards(AuthGuard('jwt'))
   @Post()
   createProduct(@Request() req, @Body() body: CreateProductDto) {
-    console.log(req);
     return this.productsService.create(body, req.user);
   }
 
