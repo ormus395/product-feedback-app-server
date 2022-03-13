@@ -41,8 +41,8 @@ export class ProductsController {
     @Query('title') title: string,
     @Query('userId') userId: number,
   ) {
-    console.log(title);
-    console.log(userId);
+    console.log('title', title);
+    console.log('userId', userId);
     let products;
     if (title && userId) {
       return 'this would return a product specific to title and userId';
@@ -53,11 +53,6 @@ export class ProductsController {
     }
 
     console.log(products);
-    if (products.length < 1) {
-      throw new NotFoundException(
-        'There doesnt seem to be products with that title.',
-      );
-    }
     return products;
   }
 

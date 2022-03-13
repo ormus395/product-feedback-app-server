@@ -7,9 +7,11 @@ import {
   UseInterceptors,
   Get,
 } from '@nestjs/common';
+import { SerializeInterceptor } from '../interceptors/serialize.interceptor';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
+import { UserDto } from '../users/dto/user.dto';
 
 // @UseInterceptors(new SerializeInterceptor(UserDto))
 @Controller('auth')
@@ -32,6 +34,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(new SerializeInterceptor(UserDto))
   @Get('/profile')
   async getProfile(@Request() req) {
     return this.userService.findOne(req.user.id);
